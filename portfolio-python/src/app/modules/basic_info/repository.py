@@ -33,5 +33,4 @@ class BasicInfoRepository:
             async with conn.cursor(row_factory=dict_row) as cur:
                 await cur.execute("SELECT * FROM basic_info")
                 result = await cur.fetchone()
-                print(result)
                 return result
