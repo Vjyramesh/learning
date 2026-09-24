@@ -64,3 +64,20 @@ class SkillRepository:
                 result = await cur.fetchone()
                 await conn.commit()
                 return result
+
+    async def delete_by_id(self, id):
+        async with self.db.pool.connection() as conn:
+            async with conn.cursor(row_factory=dict_row) as cur:
+                await cur.execute("DELETE FROM skills WHERE id = %s RETURNING *", (id,))
+                result = await cur.fetchone()
+                await conn.commit()
+                return result
+
+    async def get_by_id(self, id):
+        async with self.db.pool.connection() as conn:
+            async with conn.cursor(row_factory=dict_row) as cur:
+                await cur.execute("SELECT * FROM skills WHERE id = %s", (id,))
+                result = await cur.fetchone()
+                return result
+
+    

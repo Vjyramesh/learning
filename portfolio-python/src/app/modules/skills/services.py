@@ -36,3 +36,25 @@ class SkillService:
             return SkillResponse(success=False, error=True, message="Failed to update skill", data=None)
 
         return SkillResponse(success=True, error=False, message="Skill updated successfully", data=SkillData(**skill))
+
+    async def delete_by_id(self, id: int):
+        if not self.repository:
+            raise ValueError("Repository is not initialized")
+
+        skill = await self.repository.delete_by_id(id)
+
+        if not skill:
+            return SkillResponse(success=False, error=True, message="Failed to delete skill", data=None)
+
+        return SkillResponse(success=True, error=False, message="Skill deleted successfully", data=SkillData(**skill))
+
+    async def get_by_id(self, id: int):
+        if not self.repository:
+            raise ValueError("Repository is not initialized")
+
+        skill = await self.repository.get_by_id(id)
+
+        if not skill:
+            return SkillResponse(success=False, error=True, message="Skill not found", data=None)
+
+        return SkillResponse(success=True, error=False, message="Skill retrieved successfully", data=SkillData(**skill))
