@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.modules.skills.schema import SkillCreate, SkillResponse, SkillUpdate
+from app.modules.skills.schema import SkillCreate, SkillResponse, SkillUpdate, SkillId
 from fastapi import Depends
 from app.modules.skills.services import SkillService
 from app.modules.skills.repository import SkillRepository
@@ -31,3 +31,11 @@ async def update_skill(payload: SkillUpdate, service: SkillService = Depends(get
     id = payload.id
     data = payload.model_dump(exclude_unset=True, exclude={"id"})
     return await service.update(id, data)
+
+@router.delete('/{id}', response_model=SkillResponse)
+async def delete_skill(payload: SkillId, service: SkillService = Depends(get_skill_services)):
+    return await service.delete_by_id(payload.id)
+
+@router.get('/{id}', response_model=SkillResponse)
+async def get_skill_by_id(id: int, service: SkillService = Depends(get_skill_services)):
+    return await service.get_by_id(id)
