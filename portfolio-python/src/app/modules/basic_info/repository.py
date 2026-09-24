@@ -34,3 +34,43 @@ class BasicInfoRepository:
                 await cur.execute("SELECT * FROM basic_info")
                 result = await cur.fetchone()
                 return result
+
+    async def create(self, name, email, phone, bio, about_me, github_url, linkedin_url, website_url, avatar_url, favicon_url):
+        async with self.db.pool.connection() as conn:
+            async with conn.cursor(row_factory=dict_row) as curr:
+                await curr.execute("""
+                    INSERT INTO basic_info (name, email, phone, bio, about_me, github_url, linkedin_url, website_url, avatar_url, favicon_url)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    RETURNING *
+                """, (name, email, phone, bio, about_me, github_url, linkedin_url, website_url, avatar_url, favicon_url))
+                result = await curr.fetchone()
+                await conn.commit()
+                return result
+
+    async def update(self, id:int, data:dict):
+        async with self.db.pool.connection() as conn:
+            async with conn.cursor(row_factory=dict_row) as curr:
+                set_clause = ", ".join([f"{key} = %s" for key in data.keys()])
+                values = list(data.values())
+                values.append(id)
+                await curr.execute(f"""
+                    UPDATE basic_info
+                    SET {set_clause}
+                    WHERE id = %s
+                    RETURNING *
+                """, values)
+                result = await curr.fetchone()
+                await conn.commit()
+                return result
+
+    async def delete(self, id: int):
+        async with self.db.pool.connection() as conn:
+            async with conn.cursor(row_factory=dict_row) as curr:
+                await curr.execute("""
+                    DELETE FROM basic_info
+                    WHERE id = %s
+                    RETURNING *
+                """, (id,))
+                result = await curr.fetchone()
+                await conn.commit()
+                return result
