@@ -25,6 +25,7 @@ class BasicInfoResponse(BaseModel):
     success: bool
     message: str
     error:Optional[str] = None
+    status: int
     data: Optional[BasicInfoData] = None
 
 class BasicInfoUpdate(BasicInfoData):

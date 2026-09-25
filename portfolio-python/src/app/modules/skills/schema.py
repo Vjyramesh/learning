@@ -27,6 +27,7 @@ class SkillResponse(BaseModel):
     success: bool
     message: str
     error: bool = False
+    status: int
     data: Optional[Union[SkillData, List[SkillData]]] = None
 
 class SkillUpdate(SkillId):
