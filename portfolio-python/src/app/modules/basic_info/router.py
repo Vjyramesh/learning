@@ -3,6 +3,7 @@ from src.app.modules.basic_info.schema import BasicInfoResponse, BasicInfoCreate
 from src.app.modules.basic_info.services import BasicInfoService
 from src.app.modules.basic_info.repository import BasicInfoRepository
 from src.app.config.database import db_manager
+from src.app.libs.response_utils import apply_response_headers
 
 router = APIRouter(prefix="/basic-info", tags=["Basic Info"])
 
@@ -20,12 +21,6 @@ def get_basic_info_service() -> BasicInfoService:
     return BasicInfoService(repository=repository)
 
 
-def _apply_response_headers(response: Response, result: BasicInfoResponse):
-    response.status_code = result.status
-    response.headers["X-Success"] = str(result.success).lower()
-    response.headers["X-Error"] = str(result.error).lower()
-
-
 @router.get("", response_model = BasicInfoResponse)
 async def fetch_basic_info(response: Response, service: BasicInfoService = Depends(get_basic_info_service)):
     """ API endpoint to fetch basic information
@@ -41,7 +36,7 @@ async def fetch_basic_info(response: Response, service: BasicInfoService = Depen
 
     if not profile.success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={"error": True, "message": "Data not found"})
-    _apply_response_headers(response, profile)
+    apply_response_headers(response, profile)
     return profile
 
 @router.post("", response_model=BasicInfoResponse)
@@ -75,7 +70,7 @@ async def create_basic_info(
 
     if not create.success:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"error": True, "data": create.model_dump()})
-    _apply_response_headers(response, create)
+    apply_response_headers(response, create)
     return create
 
 @router.put("", response_model=BasicInfoResponse)
@@ -101,7 +96,7 @@ async def update_basic_info(payload: BasicInfoUpdate, response: Response, servic
 
     if not update.success:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"error": True, "message": "Failed to update basic info or record not found"})
-    _apply_response_headers(response, update)
+    apply_response_headers(response, update)
     return update
 
 @router.delete("", response_model=BasicInfoResponse)
@@ -120,5 +115,5 @@ async def delete_basic_info(payload: BasicInfoDelete, response: Response, servic
 
     if not delete.success:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"error": True, "message": "Failed to delete basic info or record not found"})
-    _apply_response_headers(response, delete)
+    apply_response_headers(response, delete)
     return delete

@@ -1,6 +1,6 @@
 
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, HttpUrl
 
@@ -21,7 +21,7 @@ class CertificationData(CertificationBase):
 
 class CertificationResponse(BaseModel):
     message: str
-    data: CertificationData | None = None
+    data: Optional[Union[CertificationData, List[CertificationData]]] = None
     error: bool
     status: int
     success: bool
