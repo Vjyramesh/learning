@@ -4,7 +4,7 @@ from .repository import CertificationRepository
 from .services import CertificationService
 from src.app.config.database import db_manager
 from src.app.libs.response_utils import apply_response_headers
-from .schema import CertificationResponse, CertificationCreate, CertificationUpdate
+from .schema import CertificationDelete, CertificationResponse, CertificationCreate, CertificationUpdate
 
 router = APIRouter(prefix='/certifications', tags=['certifications'])
 
@@ -47,3 +47,16 @@ async def update_certification(payload: CertificationUpdate, response: Response,
     )
     apply_response_headers(response, certification)
     return certification
+
+@router.delete('/', response_model=CertificationResponse)
+async def delete_certification(payload: CertificationDelete, response: Response, service: CertificationService = Depends(get_certifications_services)):
+    certification = await service.delete(id = payload.id)
+    apply_response_headers(response, certification)
+    return certification
+
+@router.get('/{id}', response_model=CertificationResponse)
+async def get_certification_by_id(id: int, response: Response, service: CertificationService = Depends(get_certifications_services)):
+    certification = await service.get_by_id(id=id)
+    apply_response_headers(response, certification)
+    return certification
+

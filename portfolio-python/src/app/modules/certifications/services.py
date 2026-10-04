@@ -57,3 +57,38 @@ class CertificationService:
             error=False,
             success=True
         )
+    async def delete(self, id):
+        certification = await self.repository.delete_certification(id)
+        if not certification:
+            return CertificationResponse(
+                message="Failed to delete certification",
+                data=None,
+                error=True,
+                status=404,
+                success=False
+            )
+        return CertificationResponse(
+            message="Certification deleted successfully",
+            data=certification,
+            status=200,
+            error=False,
+            success=True
+        )
+
+    async def get_by_id(self, id):
+        certification = await self.repository.get_certification_by_id(id)
+        if not certification:
+            return CertificationResponse(
+                message="Certification not found",
+                data=None,
+                error=True,
+                status=404,
+                success=False
+            )
+        return CertificationResponse(
+            message="Fetched certification successfully",
+            data=certification,
+            status=200,
+            error=False,
+            success=True
+        )

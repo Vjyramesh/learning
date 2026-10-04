@@ -33,3 +33,6 @@ class CertificationUpdate(CertificationData):
     expiration_date: Optional[datetime] = None
     credential_id: Optional[str] = None
     credential_url: Optional[HttpUrl] = None
+
+class CertificationDelete(BaseModel):
+    id: int
